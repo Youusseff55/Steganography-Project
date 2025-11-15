@@ -9,24 +9,26 @@ def stega_encode(message, image_path):
         ascii_format=ord(ch)
         binary_ch=format(ascii_format,'08b')
         binary_message+=binary_ch
-    print(f"your secret message have been converted to binary and it's : {binary_message}")
 
 #convert image bytes to binary list
 
     with open (image_path, 'rb') as image_file:
-            byte_data=image_file.read()
+            byte_data=bytearray(image_file.read())
             byte_list=list(byte_data)
             for byte in byte_list:
                 binary_byte = format(byte,"08b")
                 final_binary_list.append(binary_byte)
-            print (final_binary_list)
+            print(final_binary_list[0:10])
 
-stega_encode("hi","boat.png")
+#replacement
+
+    for i in range(len(binary_message)):
+        old_byte = final_binary_list[i]
+        new_byte = old_byte[:-1] + binary_message[i]
+        final_binary_list[i] = new_byte
+    print(final_binary_list[0:10])
+stega_encode("h","boat.png")
+print(format(ord("h"),'08b'))
 
 
-    
-
-
-
-
-        
+         
