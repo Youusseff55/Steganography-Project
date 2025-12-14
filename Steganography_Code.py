@@ -28,17 +28,21 @@ def stega_encode(message, image_path, output_image):
     binary_message += "00000000"
 
 #convert image bytes to binary list
-
-    with open (image_path, 'rb') as image_file:
+    try:
+        with open (image_path, 'rb') as image_file:
             byte_data=bytearray(image_file.read())
+    except FileNotFoundError:
+            raise ValueError(f"File {image_path} not found")
+    except:
+            raise ValueError(f"can't read {image_path}")
 # Check if the message fits the image
-            if len(binary_message)>len(byte_data):
-                raise ValueError("Message too long for this image")
+    if len(binary_message)>len(byte_data):
+        raise ValueError("Message too long for this image")
             
-            byte_list=list(byte_data)
-            for byte in byte_list:
-                binary_byte = format(byte,"08b")
-                final_binary_list.append(binary_byte)
+    byte_list=list(byte_data)
+    for byte in byte_list:
+        binary_byte = format(byte,"08b")
+        final_binary_list.append(binary_byte)
 #replacement
 
     for i in range(54,54+len(binary_message)):
@@ -53,8 +57,14 @@ def stega_encode(message, image_path, output_image):
 
 def stega_decode(stego_image):
     # Read image bytes
-    with open(stego_image, 'rb') as f:
-        byte_data = bytearray(f.read())
+    try:
+        with open(stego_image, 'rb') as f:
+            byte_data = bytearray(f.read())
+    except FileNotFoundError:
+        raise ValueError(f"File {stego_image} not found")
+    except:
+        raise ValueError(f"can't read {stego_image}")
+
     
     # Convert each byte to binary string starting from offset 54
     binary_bytes = []
