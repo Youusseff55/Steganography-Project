@@ -12,6 +12,7 @@ def stega_encode(message, image_path, output_image):
 # Check if image path is different than output path
     if image_path==output_image:
         raise ValueError("Output image path can't be the same as the input")
+#Check if message is in txt file
     if message.lower().endswith('.txt'):
         try:
             with open (message, 'r') as text_file:
