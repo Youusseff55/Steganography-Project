@@ -2,7 +2,7 @@ def stega_encode(message, image_path, output_image):
 
 # transforms the message to be hidden into binary format that can be hidden in the image
 
-#check if messafe is empty
+#check if message is empty
     if len(message)==0:
         raise ValueError("Message is empty")
     
@@ -12,7 +12,16 @@ def stega_encode(message, image_path, output_image):
 # Check if image path is different than output path
     if image_path==output_image:
         raise ValueError("Output image path can't be the same as the input")
-    
+    if message.lower().endswith('.txt'):
+        try:
+            with open (message, 'r') as text_file:
+                message_content=text_file.read().strip()
+                message=message_content
+        except FileNotFoundError:
+            raise ValueError(f'Text file {message} not found')
+        except:
+            raise ValueError(f'Error reading text file: {message}')
+
 # transforms the message to be hidden into binary format that can be hidden in the image    
     binary_message=''
     final_binary_list=[]
