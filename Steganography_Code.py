@@ -51,4 +51,71 @@ def stega_encode(message, image_path, output_image):
     with open(output_image, 'wb') as image_file:
          image_file.write(stego_data)
 
-stega_encode('hhhhhh','sample2.bmp','modifieddsample2.bmp')
+def stega_decode(stego_image):
+    # Read image bytes
+    with open(stego_image, 'rb') as f:
+        byte_data = bytearray(f.read())
+    
+    # Convert each byte to binary string starting from offset 54
+    binary_bytes = []
+    for i in range(54, len(byte_data)):
+        binary_bytes.append(format(byte_data[i], '08b'))
+    
+    # Extract LSBs to get the hidden message bits
+    message_bits = ''
+    for b in binary_bytes:
+        message_bits += b[-1]  # take the last bit
+    
+    # Split the bits into 8-bits
+    chars = []
+    for i in range(0, len(message_bits), 8):
+        byte = message_bits[i:i+8]
+        if len(byte) < 8:  # incomplete byte at the end
+            break
+        if byte == '00000000':  # stop at delimiter
+            break
+        chars.append(chr(int(byte, 2)))  # convert binary to character
+    
+    # Join the characters to get the message
+    message = ''.join(chars)
+    return message
+
+
+def user_interface():
+    print("\n=== BMP Steganography ===")
+    
+    while True:
+        print("\n1. Hide message")
+        print("2. Extract message")  
+        print("3. Quit")
+        
+        opt = input("\nChoice: ").strip()
+        
+        if opt == '1':
+            msg = input("Message: ")
+            in_img = input("Input BMP: ")
+            out_img = input("Output BMP: ")
+            
+            try:
+                stega_encode(msg, in_img, out_img)
+                print("✓ Done!")
+            except Exception as e:
+                print(f"✗ Error: {e}")
+                
+        elif opt == '2':
+            img = input("Stego BMP: ")
+            
+            try:
+                result = stega_decode(img)
+                print(f"\nExtracted: {result}")
+            except Exception as e:
+                print(f"✗ Error: {e}")
+                
+        elif opt == '3':
+            print("Goodbye!")
+            break
+            
+        else:
+            print("Invalid choice")
+
+user_interface()
