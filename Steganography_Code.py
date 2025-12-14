@@ -2,10 +2,8 @@ def stega_encode(message, image_path, output_image):
 
 # transforms the message to be hidden into binary format that can be hidden in the image
 
-    binary_message=''
-    final_binary_list=[]
-
-    if len(binary_message)==0:
+#check if messafe is empty
+    if len(message)==0:
         raise ValueError("Message is empty")
     
 # Check if input image is BMP format
@@ -14,6 +12,10 @@ def stega_encode(message, image_path, output_image):
 # Check if image path is different than output path
     if image_path==output_image:
         raise ValueError("Output image path can't be the same as the input")
+    
+# transforms the message to be hidden into binary format that can be hidden in the image    
+    binary_message=''
+    final_binary_list=[]
     
     for ch in message:
         ascii_format=ord(ch)
@@ -37,15 +39,16 @@ def stega_encode(message, image_path, output_image):
             for byte in byte_list:
                 binary_byte = format(byte,"08b")
                 final_binary_list.append(binary_byte)
- 
 #replacement
 
-    for i in range(len(binary_message)):
-        old_byte = final_binary_list[i]
-        new_byte = old_byte[:-1] + binary_message[i]
+    for i in range(54,54+len(binary_message)):
+        old_byte = final_binary_list[i]          
+        new_byte = old_byte[:-1] + binary_message[i-54]
         final_binary_list[i] = new_byte
 
     new_byte_values = [int(b, 2) for b in final_binary_list]
     stego_data= bytearray(new_byte_values)
     with open(output_image, 'wb') as image_file:
          image_file.write(stego_data)
+
+stega_encode('hhhhhh','sample2.bmp','modifieddsample2.bmp')
